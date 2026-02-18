@@ -460,7 +460,10 @@ async function operator(proxies, targetPlatform, context) {
       ? proxy.name.replace(blockRegex, "")
       : proxy.name;
     // 自动剥离节点名中的域名（含点的多级域名），避免误匹配国家代码
-    cleanName = cleanName.replace(/[a-z0-9]([a-z0-9-]*\.)+[a-z0-9-]+/gi, "");
+    cleanName = cleanName.replace(
+      /[a-zA-Z0-9]([a-zA-Z0-9-]*\.)+[a-zA-Z]+/g,
+      "",
+    );
     const code = matchNameToCode(cleanName);
     if (code) {
       countryMap.set(serverKey(proxy), code);
