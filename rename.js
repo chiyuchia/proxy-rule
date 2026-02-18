@@ -275,10 +275,6 @@ const RETAIN_KEYWORDS = [
   "台北",
   "Taipei",
   "TPE",
-  // 香港
-  "HKG",
-  // 新加坡
-  "SIN",
   // 荷兰
   "阿姆斯特丹",
   "Amsterdam",
