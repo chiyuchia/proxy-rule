@@ -45,36 +45,62 @@ const HOT_REGIONS = new Set(["HK", "TW", "CN", "JP", "SG", "US"]);
 // 节点名预处理替换表：将别名/城市名替换为标准地区名，便于后续 ZH/QC 匹配
 // key 为替换目标（ZH 或 QC 数组中的值），value 为匹配正则
 const RURE_KEY = {
-  香港: /Hongkong|HONG KONG|港(?!.*线)/gi,
-  台湾: /新台|新北|台(?!.*线)/g,
+  香港: /Hongkong|HONG KONG|HKG|港(?!.*线)/gi,
+  台湾: /新台|新北|TPE|TSA|台(?!.*线)/g,
   Taiwan: /Taipei/g,
-  日本: /东京|大坂|(深|沪|呼|京|广|杭|中|辽)日(?!.*(I|线))/g,
+  日本: /东京|大坂|NRT|HND|KIX|OSA|(深|沪|呼|京|广|杭|中|辽)日(?!.*(I|线))/g,
   Japan: /Tokyo|Osaka/g,
-  韩国: /春川|首尔|韩(?!.*国)/g,
+  韩国: /春川|首尔|ICN|GMP|韩(?!.*国)/g,
   Korea: /Seoul|Chuncheon/g,
-  新加坡: /狮城|(深|沪|呼|京|广|杭)新/g,
-  美国: /USA|Los Angeles|San Jose|Silicon Valley|Michigan|波特兰|芝加哥|哥伦布|纽约|硅谷|俄勒冈|西雅图|(深|沪|呼|京|广|杭)美/g,
-  英国: /伦敦/g,
+  新加坡: /狮城|SIN|(深|沪|呼|京|广|杭)新/g,
+  美国: /USA|LAX|SJC|SEA|SFO|JFK|EWR|IAD|ORD|DFW|MIA|ATL|IAH|PHX|DEN|LAS|BOS|Los Angeles|San Jose|Silicon Valley|Michigan|波特兰|芝加哥|哥伦布|纽约|硅谷|俄勒冈|西雅图|(深|沪|呼|京|广|杭)美/g,
+  英国: /伦敦|LHR|LGW|STN|MAN|BHX|EDI|GLA/g,
   "United Kingdom": /UK|Great Britain|London/g,
-  澳大利亚: /澳洲|墨尔本|悉尼|(深|沪|呼|京|广|杭)澳/g,
+  澳大利亚: /澳洲|墨尔本|悉尼|SYD|MEL|BNE|PER|ADL|CBR|(深|沪|呼|京|广|杭)澳/g,
   Australia: /Sydney|Melbourne/g,
-  德国: /法兰克福|(深|沪|呼|京|广|杭)德(?!.*(I|线))/g,
+  德国: /法兰克福|FRA|MUC|DUS|BER|HAM|STR|CGN|(深|沪|呼|京|广|杭)德(?!.*(I|线))/g,
   Germany: /Frankfurt/g,
-  俄罗斯: /莫斯科/g,
+  俄罗斯: /莫斯科|SVO|DME|LED|VKO/g,
   Russia: /Moscow/g,
-  土耳其: /伊斯坦布尔/g,
+  土耳其: /伊斯坦布尔|IST|SAW|ESB/g,
   Turkey: /Istanbul/g,
-  印度: /孟买/g,
+  印度: /孟买|BOM|DEL|BLR|MAA|CCU|HYD/g,
   India: /Mumbai/g,
-  印尼: /印度尼西亚|雅加达/g,
+  印尼: /印度尼西亚|雅加达|CGK|SUB|DPS/g,
   Indonesia: /Jakarta/g,
-  法国: /巴黎/g,
+  法国: /巴黎|CDG|ORY|LYS|NCE|MRS/g,
   France: /Paris/g,
-  Switzerland: /Zurich/g,
-  阿联酋: /迪拜|阿拉伯联合酋长国/g,
+  Switzerland: /Zurich|ZRH|GVA/g,
+  阿联酋: /迪拜|阿拉伯联合酋长国|DXB|AUH|SHJ/g,
   Dubai: /United Arab Emirates/g,
-  泰国: /泰國|曼谷/g,
+  泰国: /泰國|曼谷|BKK|DMK|HKT/g,
   中国: /中國/g,
+  // 新增地区机场代码
+  荷兰: /AMS/g,
+  马来: /KUL|PEN|BKI/g,
+  菲律宾: /MNL|CEB/g,
+  加拿大: /YYZ|YVR|YUL|YYC|YEG|YOW/g,
+  波兰: /WAW|KRK/g,
+  捷克: /PRG/g,
+  奥地利: /VIE/g,
+  匈牙利: /BUD/g,
+  比利时: /BRU/g,
+  葡萄牙: /LIS|OPO/g,
+  西班牙: /MAD|BCN/g,
+  意大利: /FCO|MXP|VCE/g,
+  挪威: /OSL/g,
+  瑞典: /ARN/g,
+  芬兰: /HEL/g,
+  丹麦: /CPH/g,
+  罗马尼亚: /OTP/g,
+  以色列: /TLV/g,
+  沙特阿拉伯: /RUH|JED/g,
+  卡塔尔: /DOH/g,
+  南非: /JNB|CPT/g,
+  墨西哥: /MEX|CUN/g,
+  阿根廷: /EZE/g,
+  哥伦比亚: /BOG/g,
+  巴西: /GRU|GIG/g,
 };
 
 /**
@@ -101,6 +127,11 @@ function matchNameToCode(name) {
   // 再尝试 QC（英文全称）
   for (let i = 0; i < QC.length; i++) {
     if (processed.includes(QC[i])) return EN[i];
+  }
+  // 最后尝试 EN 代码直接匹配（支持前后有特殊符号，如 US_1|1.0MB/s、HK-01 等）
+  for (let i = 0; i < EN.length; i++) {
+    const re = new RegExp(`(?<![A-Za-z])${EN[i]}(?![A-Za-z])`, "i");
+    if (re.test(processed)) return EN[i];
   }
   return null;
 }
@@ -136,11 +167,17 @@ const RETAIN_KEYWORDS = [
   "大坂",
   "Tokyo",
   "Osaka",
+  "NRT",
+  "HND",
+  "KIX",
+  "OSA",
   // 韩国
   "首尔",
   "春川",
   "Seoul",
   "Chuncheon",
+  "ICN",
+  "GMP",
   // 美国
   "纽约",
   "洛杉矶",
@@ -156,44 +193,184 @@ const RETAIN_KEYWORDS = [
   "New York",
   "Seattle",
   "Chicago",
+  "LAX",
+  "SJC",
+  "SEA",
+  "SFO",
+  "JFK",
+  "EWR",
+  "IAD",
+  "ORD",
+  "DFW",
+  "MIA",
+  "ATL",
+  "IAH",
+  "PHX",
+  "DEN",
+  "LAS",
+  "BOS",
   // 英国
   "伦敦",
   "London",
+  "LHR",
+  "LGW",
+  "STN",
+  "MAN",
   // 澳大利亚
   "悉尼",
   "墨尔本",
   "Sydney",
   "Melbourne",
+  "SYD",
+  "MEL",
+  "BNE",
+  "PER",
   // 德国
   "法兰克福",
   "Frankfurt",
+  "FRA",
+  "MUC",
+  "BER",
   // 俄罗斯
   "莫斯科",
   "Moscow",
+  "SVO",
+  "DME",
   // 土耳其
   "伊斯坦布尔",
   "Istanbul",
+  "IST",
+  "SAW",
   // 印度
   "孟买",
   "Mumbai",
+  "BOM",
+  "DEL",
+  "BLR",
   // 印尼
   "雅加达",
   "Jakarta",
+  "CGK",
+  "DPS",
   // 法国
   "巴黎",
   "Paris",
+  "CDG",
+  "ORY",
   // 瑞士
   "苏黎世",
   "Zurich",
+  "ZRH",
   // 阿联酋
   "迪拜",
   "Dubai",
+  "DXB",
+  "AUH",
   // 泰国
   "曼谷",
   "Bangkok",
+  "BKK",
+  "DMK",
   // 台湾
   "台北",
   "Taipei",
+  "TPE",
+  // 香港
+  "HKG",
+  // 新加坡
+  "SIN",
+  // 荷兰
+  "阿姆斯特丹",
+  "Amsterdam",
+  "AMS",
+  // 加拿大
+  "多伦多",
+  "温哥华",
+  "Toronto",
+  "Vancouver",
+  "YYZ",
+  "YVR",
+  // 马来西亚
+  "吉隆坡",
+  "Kuala Lumpur",
+  "KUL",
+  // 菲律宾
+  "马尼拉",
+  "Manila",
+  "MNL",
+  // 波兰
+  "华沙",
+  "Warsaw",
+  "WAW",
+  // 捷克
+  "布拉格",
+  "Prague",
+  "PRG",
+  // 奥地利
+  "维也纳",
+  "Vienna",
+  "VIE",
+  // 西班牙
+  "马德里",
+  "巴塞罗那",
+  "Madrid",
+  "Barcelona",
+  "MAD",
+  "BCN",
+  // 意大利
+  "米兰",
+  "罗马",
+  "Milan",
+  "Rome",
+  "MXP",
+  "FCO",
+  // 葡萄牙
+  "里斯本",
+  "Lisbon",
+  "LIS",
+  // 瑞典
+  "斯德哥尔摩",
+  "Stockholm",
+  "ARN",
+  // 芬兰
+  "赫尔辛基",
+  "Helsinki",
+  "HEL",
+  // 丹麦
+  "哥本哈根",
+  "Copenhagen",
+  "CPH",
+  // 挪威
+  "奥斯陆",
+  "Oslo",
+  "OSL",
+  // 以色列
+  "特拉维夫",
+  "Tel Aviv",
+  "TLV",
+  // 沙特阿拉伯
+  "利雅得",
+  "吉达",
+  "Riyadh",
+  "Jeddah",
+  "RUH",
+  "JED",
+  // 卡塔尔
+  "多哈",
+  "Doha",
+  "DOH",
+  // 南非
+  "约翰内斯堡",
+  "Johannesburg",
+  "JNB",
+  // 巴西
+  "圣保罗",
+  "Sao Paulo",
+  "GRU",
+  // 墨西哥
+  "墨西哥城",
+  "Mexico City",
+  "MEX",
 ];
 
 /**
