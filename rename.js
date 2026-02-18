@@ -456,9 +456,11 @@ async function operator(proxies, targetPlatform, context) {
 
   for (const proxy of proxies) {
     if (!proxy.server) continue;
-    const cleanName = blockRegex
+    let cleanName = blockRegex
       ? proxy.name.replace(blockRegex, "")
       : proxy.name;
+    // 自动剥离节点名中的域名（含点的多级域名），避免误匹配国家代码
+    cleanName = cleanName.replace(/[a-z0-9]([a-z0-9-]*\.)+[a-z0-9-]+/gi, "");
     const code = matchNameToCode(cleanName);
     if (code) {
       countryMap.set(serverKey(proxy), code);
