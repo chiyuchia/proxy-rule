@@ -1,6 +1,6 @@
 /**
- * Sub-Store IP 地区反查脚本
- * 使用 IPinfo Lite API: https://api.ipinfo.io/lite/{ip}?token=TOKEN
+ * Sub-Store 节点地区标注脚本
+ * 通过节点名匹配或 IP 查询为节点添加地区标签（国旗 + 中文地区名 + 序号）
  *
  * 参数 (通过 $arguments 传入):
  *   remove: boolean              是否删除原节点名，默认 false
@@ -8,13 +8,19 @@
  *                                例如: "TG:LSMOO|公益|测试"
  *   token: string                IPinfo API Token，不传则使用标准 API: https://ipinfo.io/{ip}/json（有限速）
  *   one: boolean                 去掉只有一个节点的地区的序号（01），默认 false
- *   hot: boolean|string          只保留热门地区节点，默认 false
+ *   hot: boolean|string          只保留热门地区节点，默认不过滤
  *                                传 true/1 使用预设热门地区（HK/TW/CN/JP/SG/US）
  *                                传 "HK|SG|JP" 形式则只保留指定地区
+ *   retain: string               remove=true 时从原节点名中提取并保留的关键词，不传则不提取
+ *                                内置关键词（东京、悉尼、Los Angeles 等）自动匹配
+ *                                可追加自定义关键词，多个用 | 连接，例如: "city|IPLC|专线"
+ *                                特殊值 "city" 仅触发城市关键词提取，不追加额外词
  *
  * 输出格式:
  *   remove=false: "_subName 🇺🇸 美国 01 | 原节点名"
- *   remove=true:  "_subName 🇺🇸 美国 01"
+ *   remove=true 未传 retain:          "_subName 🇺🇸 美国 01"
+ *   remove=true 传 retain 有命中:     "_subName 🇺🇸 美国 01 | 东京 IPLC"
+ *   remove=true 传 retain 无命中:     "_subName 🇺🇸 美国 01"
  */
 
 // prettier-ignore
@@ -95,6 +101,103 @@ function matchNameToCode(name) {
   return null;
 }
 
+/**
+ * 从节点名中提取 RURE_KEY 命中的城市/别名关键词（原始文本）
+ * 返回第一个命中的原始匹配文本，未命中返回 null
+ */
+function extractCityKeyword(name) {
+  for (const regex of Object.values(RURE_KEY)) {
+    // 重置 lastIndex（全局正则有状态）
+    regex.lastIndex = 0;
+    const match = regex.exec(name);
+    if (match) return match[0];
+  }
+  return null;
+}
+
+// 内置保留关键词列表：从原节点名中提取并保留（remove=true 时追加到新名称）
+const RETAIN_KEYWORDS = [
+  // 日本
+  "东京",
+  "大坂",
+  "Tokyo",
+  "Osaka",
+  // 韩国
+  "首尔",
+  "春川",
+  "Seoul",
+  "Chuncheon",
+  // 美国
+  "纽约",
+  "洛杉矶",
+  "硅谷",
+  "西雅图",
+  "芝加哥",
+  "波特兰",
+  "哥伦布",
+  "俄勒冈",
+  "Los Angeles",
+  "San Jose",
+  "Silicon Valley",
+  "New York",
+  "Seattle",
+  "Chicago",
+  // 英国
+  "伦敦",
+  "London",
+  // 澳大利亚
+  "悉尼",
+  "墨尔本",
+  "Sydney",
+  "Melbourne",
+  // 德国
+  "法兰克福",
+  "Frankfurt",
+  // 俄罗斯
+  "莫斯科",
+  "Moscow",
+  // 土耳其
+  "伊斯坦布尔",
+  "Istanbul",
+  // 印度
+  "孟买",
+  "Mumbai",
+  // 印尼
+  "雅加达",
+  "Jakarta",
+  // 法国
+  "巴黎",
+  "Paris",
+  // 瑞士
+  "苏黎世",
+  "Zurich",
+  // 阿联酋
+  "迪拜",
+  "Dubai",
+  // 泰国
+  "曼谷",
+  "Bangkok",
+  // 台湾
+  "台北",
+  "Taipei",
+];
+
+/**
+ * 从原节点名中提取命中的保留关键词列表
+ * 先匹配城市关键词，再匹配用户自定义 retainKeys
+ * 返回命中词数组（去重），未命中返回空数组
+ */
+function extractRetainKeywords(name, retainKeys) {
+  const hits = [];
+  for (const kw of RETAIN_KEYWORDS) {
+    if (name.includes(kw) && !hits.includes(kw)) hits.push(kw);
+  }
+  for (const kw of retainKeys) {
+    if (name.includes(kw) && !hits.includes(kw)) hits.push(kw);
+  }
+  return hits;
+}
+
 async function operator(proxies, targetPlatform, context) {
   const removeOriginalName = !!$arguments?.remove;
   const numone = !!$arguments?.one;
@@ -115,6 +218,13 @@ async function operator(proxies, targetPlatform, context) {
     ? new RegExp(decodeURIComponent(String(blockWordsRaw)), "gi")
     : null;
   const API_TOKEN = $arguments?.token || "";
+  const retainKeysRaw = $arguments?.retain;
+  const retainKeys = retainKeysRaw
+    ? String(retainKeysRaw)
+        .split("|")
+        .map((s) => s.trim())
+        .filter((s) => s && s !== "1" && s.toLowerCase() !== "true")
+    : null;
 
   console.log(
     `[geo-tag] 开始处理，共 ${proxies.length} 个节点，removeOriginalName=${removeOriginalName}，hotOnly=${hotOnly}`,
@@ -229,7 +339,12 @@ async function operator(proxies, targetPlatform, context) {
     const seq = String(count).padStart(2, "0");
 
     const newName = removeOriginalName
-      ? `${subName} ${flag} ${zhName} ${seq}`
+      ? (() => {
+          if (!retainKeys) return `${subName} ${flag} ${zhName} ${seq}`;
+          const retained = extractRetainKeywords(proxy.name, retainKeys);
+          const base = `${subName} ${flag} ${zhName} ${seq}`;
+          return retained.length > 0 ? `${base} | ${retained.join(" ")}` : base;
+        })()
       : `${subName} ${flag} ${zhName} ${seq} | ${proxy.name}`;
 
     console.log(`[geo-tag] 重命名: ${proxy.name} → ${newName}`);
