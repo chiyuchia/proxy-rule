@@ -32,49 +32,65 @@ const CONCURRENCY = 5;
 // 热门地区（hot 参数过滤用）
 const HOT_REGIONS = new Set(["HK", "TW", "CN", "JP", "SG", "US"]);
 
-// 节点名预处理替换表（参考 rename.js rurekey）
+// 节点名预处理替换表：将别名/城市名替换为标准地区名，便于后续 ZH/QC 匹配
+// key 为替换目标（ZH 或 QC 数组中的值），value 为匹配正则
 const RURE_KEY = {
-  HK: [/Hongkong|HONG KONG/gi, /港/],
-  TW: [/台(?!.*线)/g, /Taipei/g],
-  JP: [/东京|大坂|Tokyo|Osaka/g],
-  KR: [/春川|首尔|Seoul|Chuncheon/g],
-  SG: [/狮城/g],
-  US: [
-    /USA|Los Angeles|San Jose|Silicon Valley|Michigan|波特兰|芝加哥|哥伦布|纽约|硅谷|俄勒冈|西雅图/g,
-  ],
-  GB: [/UK|London|Great Britain|伦敦/g],
-  DE: [/Frankfurt|法兰克福/g],
-  AU: [/澳洲|墨尔本|悉尼|Sydney|Melbourne/g],
-  RU: [/Moscow|莫斯科/g],
-  TR: [/Istanbul|伊斯坦布尔/g],
-  IN: [/Mumbai|孟买/g],
-  ID: [/Jakarta|雅加达/g],
-  FR: [/Paris|巴黎/g],
-  CH: [/Zurich/g],
-  CN: [/中国|中國|China/g],
+  香港: /Hongkong|HONG KONG|港(?!.*线)/gi,
+  台湾: /新台|新北|台(?!.*线)/g,
+  Taiwan: /Taipei/g,
+  日本: /东京|大坂|(深|沪|呼|京|广|杭|中|辽)日(?!.*(I|线))/g,
+  Japan: /Tokyo|Osaka/g,
+  韩国: /春川|首尔|韩(?!.*国)/g,
+  Korea: /Seoul|Chuncheon/g,
+  新加坡: /狮城|(深|沪|呼|京|广|杭)新/g,
+  美国: /USA|Los Angeles|San Jose|Silicon Valley|Michigan|波特兰|芝加哥|哥伦布|纽约|硅谷|俄勒冈|西雅图|(深|沪|呼|京|广|杭)美/g,
+  英国: /伦敦/g,
+  "United Kingdom": /UK|Great Britain|London/g,
+  澳大利亚: /澳洲|墨尔本|悉尼|(深|沪|呼|京|广|杭)澳/g,
+  Australia: /Sydney|Melbourne/g,
+  德国: /法兰克福|(深|沪|呼|京|广|杭)德(?!.*(I|线))/g,
+  Germany: /Frankfurt/g,
+  俄罗斯: /莫斯科/g,
+  Russia: /Moscow/g,
+  土耳其: /伊斯坦布尔/g,
+  Turkey: /Istanbul/g,
+  印度: /孟买/g,
+  India: /Mumbai/g,
+  印尼: /印度尼西亚|雅加达/g,
+  Indonesia: /Jakarta/g,
+  法国: /巴黎/g,
+  France: /Paris/g,
+  Switzerland: /Zurich/g,
+  阿联酋: /迪拜|阿拉伯联合酋长国/g,
+  Dubai: /United Arab Emirates/g,
+  泰国: /泰國|曼谷/g,
+  中国: /中國/g,
 };
 
 /**
  * 用节点名全量匹配地区，参考 rename.js 逻辑
- * 依次尝试 ZH、FG、QC、EN 四个数组的 includes 匹配
+ * 先用 RURE_KEY 预处理替换别名，再依次尝试 ZH、FG、QC、EN 四个数组的 includes 匹配
  * 返回 country_code 或 null
  */
 function matchNameToCode(name) {
+  // 预处理：将别名/城市名替换为标准地区名
+  let processed = name;
+  for (const [target, regex] of Object.entries(RURE_KEY)) {
+    if (regex.test(processed)) {
+      processed = processed.replace(regex, target);
+    }
+  }
   // 先尝试 ZH（中文）
   for (let i = 0; i < ZH.length; i++) {
-    if (name.includes(ZH[i])) return EN[i];
+    if (processed.includes(ZH[i])) return EN[i];
   }
   // 再尝试 FG（国旗 emoji）
   for (let i = 0; i < FG.length; i++) {
-    if (name.includes(FG[i])) return EN[i];
+    if (processed.includes(FG[i])) return EN[i];
   }
   // 再尝试 QC（英文全称）
   for (let i = 0; i < QC.length; i++) {
-    if (name.includes(QC[i])) return EN[i];
-  }
-  // 最后尝试 EN（英文缩写）
-  for (let i = 0; i < EN.length; i++) {
-    if (name.includes(EN[i])) return EN[i];
+    if (processed.includes(QC[i])) return EN[i];
   }
   return null;
 }
@@ -109,7 +125,8 @@ async function operator(proxies, targetPlatform, context) {
   let errorCount = 0;
 
   // 第一阶段：用节点名全量匹配地区，命中则写入 countryMap，跳过 API
-  const countryMap = new Map(); // server -> country_code
+  const countryMap = new Map(); // `${server}:${port}` -> country_code
+  const serverKey = (p) => `${p.server}:${p.port}`;
 
   for (const proxy of proxies) {
     if (!proxy.server) continue;
@@ -118,7 +135,7 @@ async function operator(proxies, targetPlatform, context) {
       : proxy.name;
     const code = matchNameToCode(cleanName);
     if (code) {
-      countryMap.set(proxy.server, code);
+      countryMap.set(serverKey(proxy), code);
       nameHitCount++;
       console.log(`[geo-tag] 名称命中: ${proxy.name} → ${code}`);
     }
@@ -127,7 +144,7 @@ async function operator(proxies, targetPlatform, context) {
 
   // 未命中的节点，走 DoH → API 流程
   const apiProxies = proxies.filter(
-    (p) => p.server && !countryMap.has(p.server),
+    (p) => p.server && !countryMap.has(serverKey(p)),
   );
   console.log(`[geo-tag] 需要 API 查询: ${apiProxies.length} 个节点`);
 
@@ -175,7 +192,7 @@ async function operator(proxies, targetPlatform, context) {
           );
 
           if (countryCode) {
-            countryMap.set(server, countryCode);
+            countryMap.set(serverKey(proxy), countryCode);
           } else {
             console.log(
               `[geo-tag] API 未返回 country_code: ${server}，响应: ${JSON.stringify(data)}`,
@@ -196,7 +213,7 @@ async function operator(proxies, targetPlatform, context) {
 
   const renamedProxies = proxies.map((proxy) => {
     const server = proxy.server;
-    const countryCode = server ? countryMap.get(server) : null;
+    const countryCode = server ? countryMap.get(serverKey(proxy)) : null;
 
     if (!countryCode) {
       return proxy;
@@ -226,7 +243,7 @@ async function operator(proxies, targetPlatform, context) {
   // hot 参数：只保留热门地区节点
   let result = hotOnly
     ? renamedProxies.filter((p) => {
-        const code = p.server ? countryMap.get(p.server) : null;
+        const code = p.server ? countryMap.get(serverKey(p)) : null;
         return code && hotRegions.has(code);
       })
     : renamedProxies;
@@ -237,8 +254,8 @@ async function operator(proxies, targetPlatform, context) {
 
   // 第三阶段：热门地区优先，内部按 country_code 字母序；其余也按字母序；无归属地排最后
   result.sort((a, b) => {
-    const ca = a.server ? countryMap.get(a.server) : null;
-    const cb = b.server ? countryMap.get(b.server) : null;
+    const ca = a.server ? countryMap.get(serverKey(a)) : null;
+    const cb = b.server ? countryMap.get(serverKey(b)) : null;
     if (!ca && !cb) return 0;
     if (!ca) return 1;
     if (!cb) return -1;
