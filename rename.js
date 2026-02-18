@@ -4,6 +4,10 @@
  *
  * 参数 (通过 $arguments 传入):
  *   remove: boolean              是否删除原节点名，默认 false
+ *   filter: string               过滤词，节点名匹配则直接丢弃，不参与后续处理
+ *                                默认应用内置预设（过期|剩余|官网|套餐|重置|到期|Traffic|Expire）
+ *                                传空值（filter=）禁用过滤；传词组则追加到内置预设
+ *                                例如: "测试|备用"
  *   block: string                屏蔽词，多个用 | 连接，匹配前从节点名中去除，不影响输出原名
  *                                例如: "TG:LSMOO|公益|测试"
  *   token: string                IPinfo API Token，不传则使用标准 API: https://ipinfo.io/{ip}/json（有限速）
@@ -115,7 +119,17 @@ function extractCityKeyword(name) {
   return null;
 }
 
-// 内置保留关键词列表：从原节点名中提取并保留（remove=true 时追加到新名称）
+// 内置过滤词预设：节点名匹配则直接丢弃（可通过 filter 参数追加，传空值禁用）
+const DEFAULT_FILTER_WORDS = [
+  "过期",
+  "剩余",
+  "官网",
+  "套餐",
+  "重置",
+  "到期",
+  "Traffic",
+  "Expire",
+];
 const RETAIN_KEYWORDS = [
   // 日本
   "东京",
@@ -213,6 +227,23 @@ async function operator(proxies, targetPlatform, context) {
     return matched.size > 0 ? matched : HOT_REGIONS;
   })();
   const hotOnly = hotRegions !== null;
+  const filterWordsRaw = $arguments?.filter;
+  const filterRegex = (() => {
+    // 传空值：禁用过滤
+    if (filterWordsRaw !== undefined && String(filterWordsRaw).trim() === "")
+      return null;
+    const custom = filterWordsRaw
+      ? decodeURIComponent(String(filterWordsRaw))
+          .split("|")
+          .map((s) => s.trim())
+          .filter(Boolean)
+      : [];
+    const words = [...DEFAULT_FILTER_WORDS, ...custom];
+    return new RegExp(
+      words.map((w) => w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|"),
+      "i",
+    );
+  })();
   const blockWordsRaw = $arguments?.block;
   const blockRegex = blockWordsRaw
     ? new RegExp(decodeURIComponent(String(blockWordsRaw)), "gi")
@@ -229,6 +260,14 @@ async function operator(proxies, targetPlatform, context) {
   console.log(
     `[geo-tag] 开始处理，共 ${proxies.length} 个节点，removeOriginalName=${removeOriginalName}，hotOnly=${hotOnly}`,
   );
+
+  if (filterRegex) {
+    const before = proxies.length;
+    proxies = proxies.filter((p) => !filterRegex.test(p.name));
+    console.log(
+      `[geo-tag] filter 过滤: ${before - proxies.length} 个节点被丢弃，剩余 ${proxies.length} 个`,
+    );
+  }
 
   let nameHitCount = 0;
   let missCount = 0;
