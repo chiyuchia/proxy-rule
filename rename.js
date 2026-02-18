@@ -129,8 +129,9 @@ function matchNameToCode(name) {
     if (processed.includes(QC[i])) return EN[i];
   }
   // 最后尝试 EN 代码直接匹配（支持前后有特殊符号，如 US_1|1.0MB/s、HK-01 等）
+  // 前后不能是字母、. 或 : 避免误匹配 URL/域名/标签（如 t.me → ME、TG:LSMOO → TG）
   for (let i = 0; i < EN.length; i++) {
-    const re = new RegExp(`(?<![A-Za-z])${EN[i]}(?![A-Za-z])`, "i");
+    const re = new RegExp(`(?<![A-Za-z.:])${EN[i]}(?![A-Za-z.:/])`, "i");
     if (re.test(processed)) return EN[i];
   }
   return null;
