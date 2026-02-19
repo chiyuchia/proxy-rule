@@ -404,7 +404,10 @@ function extractRetainKeywords(name, retainKeys) {
   }
   // 按关键词在原节点名中的首次出现位置排序，保留源词序
   hits.sort((a, b) => name.indexOf(a) - name.indexOf(b));
-  return hits;
+  // 过滤掉被其他命中词包含的子串（如同时命中"高级专线"和"专线"，保留前者）
+  return hits.filter(
+    (kw) => !hits.some((other) => other !== kw && other.includes(kw)),
+  );
 }
 
 async function operator(proxies, targetPlatform, context) {
