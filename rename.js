@@ -400,9 +400,15 @@ function extractRetainKeywords(name, retainKeys) {
   const hits = [];
   const nameLower = name.toLowerCase();
   const pushHit = (kw) => {
-    const idx = nameLower.indexOf(kw.toLowerCase());
-    if (idx === -1) return;
-    const original = name.slice(idx, idx + kw.length);
+    const kwLower = kw.toLowerCase();
+    // 英文关键词加单词边界，避免匹配单词内部（如 ist 命中 Registry）
+    const isAscii = /^[A-Za-z0-9]+$/.test(kw);
+    const re = isAscii
+      ? new RegExp(`(?<![A-Za-z0-9])${kwLower}(?![A-Za-z0-9])`)
+      : new RegExp(kwLower);
+    const m = re.exec(nameLower);
+    if (!m) return;
+    const original = name.slice(m.index, m.index + kw.length);
     if (!hits.includes(original)) hits.push(original);
   };
   for (const kw of RETAIN_KEYWORDS) pushHit(kw);
