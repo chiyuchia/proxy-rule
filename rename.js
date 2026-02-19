@@ -40,7 +40,7 @@ const EN_TO_ZH = new Map(EN.map((code, i) => [code, ZH[i]]));
 const CONCURRENCY = 5;
 
 // 热门地区（hot 参数过滤用）
-const HOT_REGIONS = new Set(["HK", "TW", "CN", "JP", "SG", "US"]);
+const HOT_REGIONS = new Set(['HK', 'TW', 'CN', 'JP', 'SG', 'US']);
 
 // 节点名预处理替换表：将别名/城市名替换为标准地区名，便于后续 ZH/QC 匹配
 // key 为替换目标（ZH 或 QC 数组中的值），value 为匹配正则
@@ -55,7 +55,7 @@ const RURE_KEY = {
   新加坡: /狮城|SIN|(深|沪|呼|京|广|杭)新/g,
   美国: /USA|LAX|SJC|SEA|SFO|JFK|EWR|IAD|ORD|DFW|MIA|ATL|IAH|PHX|DEN|LAS|BOS|Los Angeles|San Jose|Silicon Valley|Michigan|波特兰|芝加哥|哥伦布|纽约|硅谷|俄勒冈|西雅图|(深|沪|呼|京|广|杭)美/g,
   英国: /伦敦|LHR|LGW|STN|MAN|BHX|EDI|GLA/g,
-  "United Kingdom": /UK|Great Britain|London/g,
+  'United Kingdom': /UK|Great Britain|London/g,
   澳大利亚: /澳洲|墨尔本|悉尼|SYD|MEL|BNE|PER|ADL|CBR|(深|沪|呼|京|广|杭)澳/g,
   Australia: /Sydney|Melbourne/g,
   德国: /法兰克福|FRA|MUC|DUS|BER|HAM|STR|CGN|(深|沪|呼|京|广|杭)德(?!.*(I|线))/g,
@@ -130,7 +130,7 @@ function matchNameToCode(name) {
   }
   // 最后尝试 EN 代码直接匹配（支持前后有特殊符号，如 US_1|1.0MB/s、HK-01 等）
   for (let i = 0; i < EN.length; i++) {
-    const re = new RegExp(`(?<![A-Za-z])${EN[i]}(?![A-Za-z])`, "i");
+    const re = new RegExp(`(?<![A-Za-z])${EN[i]}(?![A-Za-z])`, 'i');
     if (re.test(processed)) return EN[i];
   }
   return null;
@@ -151,222 +151,231 @@ function extractCityKeyword(name) {
 }
 
 // 内置过滤词预设：节点名匹配则直接丢弃（可通过 filter 参数追加，传空值禁用）
-const DEFAULT_FILTER_WORDS = [
-  "过期",
-  "剩余",
-  "官网",
-  "套餐",
-  "重置",
-  "到期",
-  "Traffic",
-  "Expire",
-];
+const DEFAULT_FILTER_WORDS = ['过期', '剩余', '官网', '套餐', '重置', '到期', 'Traffic', 'Expire'];
 const RETAIN_KEYWORDS = [
   // 日本
-  "东京",
-  "大坂",
-  "Tokyo",
-  "Osaka",
-  "NRT",
-  "HND",
-  "KIX",
-  "OSA",
+  '东京',
+  '大坂',
+  'Tokyo',
+  'Osaka',
+  'NRT',
+  'HND',
+  'KIX',
+  'OSA',
   // 韩国
-  "首尔",
-  "春川",
-  "Seoul",
-  "Chuncheon",
-  "ICN",
-  "GMP",
+  '首尔',
+  '春川',
+  'Seoul',
+  'Chuncheon',
+  'ICN',
+  'GMP',
   // 美国
-  "纽约",
-  "洛杉矶",
-  "硅谷",
-  "西雅图",
-  "芝加哥",
-  "波特兰",
-  "哥伦布",
-  "俄勒冈",
-  "Los Angeles",
-  "San Jose",
-  "Silicon Valley",
-  "New York",
-  "Seattle",
-  "Chicago",
-  "LAX",
-  "SJC",
-  "SEA",
-  "SFO",
-  "JFK",
-  "EWR",
-  "IAD",
-  "ORD",
-  "DFW",
-  "MIA",
-  "ATL",
-  "IAH",
-  "PHX",
-  "DEN",
-  "LAS",
-  "BOS",
+  '纽约',
+  '洛杉矶',
+  '硅谷',
+  '西雅图',
+  '芝加哥',
+  '波特兰',
+  '哥伦布',
+  '俄勒冈',
+  'Los Angeles',
+  'San Jose',
+  'Silicon Valley',
+  'New York',
+  'Seattle',
+  'Chicago',
+  'LAX',
+  'SJC',
+  'SEA',
+  'SFO',
+  'JFK',
+  'EWR',
+  'IAD',
+  'ORD',
+  'DFW',
+  'MIA',
+  'ATL',
+  'IAH',
+  'PHX',
+  'DEN',
+  'LAS',
+  'BOS',
   // 英国
-  "伦敦",
-  "London",
-  "LHR",
-  "LGW",
-  "STN",
-  "MAN",
+  '伦敦',
+  'London',
+  'LHR',
+  'LGW',
+  'STN',
+  'MAN',
   // 澳大利亚
-  "悉尼",
-  "墨尔本",
-  "Sydney",
-  "Melbourne",
-  "SYD",
-  "MEL",
-  "BNE",
-  "PER",
+  '悉尼',
+  '墨尔本',
+  'Sydney',
+  'Melbourne',
+  'SYD',
+  'MEL',
+  'BNE',
+  'PER',
   // 德国
-  "法兰克福",
-  "Frankfurt",
-  "FRA",
-  "MUC",
-  "BER",
+  '法兰克福',
+  'Frankfurt',
+  'FRA',
+  'MUC',
+  'BER',
   // 俄罗斯
-  "莫斯科",
-  "Moscow",
-  "SVO",
-  "DME",
+  '莫斯科',
+  'Moscow',
+  'SVO',
+  'DME',
   // 土耳其
-  "伊斯坦布尔",
-  "Istanbul",
-  "IST",
-  "SAW",
+  '伊斯坦布尔',
+  'Istanbul',
+  'IST',
+  'SAW',
   // 印度
-  "孟买",
-  "Mumbai",
-  "BOM",
-  "DEL",
-  "BLR",
+  '孟买',
+  'Mumbai',
+  'BOM',
+  'DEL',
+  'BLR',
   // 印尼
-  "雅加达",
-  "Jakarta",
-  "CGK",
-  "DPS",
+  '雅加达',
+  'Jakarta',
+  'CGK',
+  'DPS',
   // 法国
-  "巴黎",
-  "Paris",
-  "CDG",
-  "ORY",
+  '巴黎',
+  'Paris',
+  'CDG',
+  'ORY',
   // 瑞士
-  "苏黎世",
-  "Zurich",
-  "ZRH",
+  '苏黎世',
+  'Zurich',
+  'ZRH',
   // 阿联酋
-  "迪拜",
-  "Dubai",
-  "DXB",
-  "AUH",
+  '迪拜',
+  'Dubai',
+  'DXB',
+  'AUH',
   // 泰国
-  "曼谷",
-  "Bangkok",
-  "BKK",
-  "DMK",
+  '曼谷',
+  'Bangkok',
+  'BKK',
+  'DMK',
   // 台湾
-  "台北",
-  "Taipei",
-  "TPE",
+  '台北',
+  'Taipei',
+  'TPE',
   // 荷兰
-  "阿姆斯特丹",
-  "Amsterdam",
-  "AMS",
+  '阿姆斯特丹',
+  'Amsterdam',
+  'AMS',
   // 加拿大
-  "多伦多",
-  "温哥华",
-  "Toronto",
-  "Vancouver",
-  "YYZ",
-  "YVR",
+  '多伦多',
+  '温哥华',
+  'Toronto',
+  'Vancouver',
+  'YYZ',
+  'YVR',
   // 马来西亚
-  "吉隆坡",
-  "Kuala Lumpur",
-  "KUL",
+  '吉隆坡',
+  'Kuala Lumpur',
+  'KUL',
   // 菲律宾
-  "马尼拉",
-  "Manila",
-  "MNL",
+  '马尼拉',
+  'Manila',
+  'MNL',
   // 波兰
-  "华沙",
-  "Warsaw",
-  "WAW",
+  '华沙',
+  'Warsaw',
+  'WAW',
   // 捷克
-  "布拉格",
-  "Prague",
-  "PRG",
+  '布拉格',
+  'Prague',
+  'PRG',
   // 奥地利
-  "维也纳",
-  "Vienna",
-  "VIE",
+  '维也纳',
+  'Vienna',
+  'VIE',
   // 西班牙
-  "马德里",
-  "巴塞罗那",
-  "Madrid",
-  "Barcelona",
-  "MAD",
-  "BCN",
+  '马德里',
+  '巴塞罗那',
+  'Madrid',
+  'Barcelona',
+  'MAD',
+  'BCN',
   // 意大利
-  "米兰",
-  "罗马",
-  "Milan",
-  "Rome",
-  "MXP",
-  "FCO",
+  '米兰',
+  '罗马',
+  'Milan',
+  'Rome',
+  'MXP',
+  'FCO',
   // 葡萄牙
-  "里斯本",
-  "Lisbon",
-  "LIS",
+  '里斯本',
+  'Lisbon',
+  'LIS',
   // 瑞典
-  "斯德哥尔摩",
-  "Stockholm",
-  "ARN",
+  '斯德哥尔摩',
+  'Stockholm',
+  'ARN',
   // 芬兰
-  "赫尔辛基",
-  "Helsinki",
-  "HEL",
+  '赫尔辛基',
+  'Helsinki',
+  'HEL',
   // 丹麦
-  "哥本哈根",
-  "Copenhagen",
-  "CPH",
+  '哥本哈根',
+  'Copenhagen',
+  'CPH',
   // 挪威
-  "奥斯陆",
-  "Oslo",
-  "OSL",
+  '奥斯陆',
+  'Oslo',
+  'OSL',
   // 以色列
-  "特拉维夫",
-  "Tel Aviv",
-  "TLV",
+  '特拉维夫',
+  'Tel Aviv',
+  'TLV',
   // 沙特阿拉伯
-  "利雅得",
-  "吉达",
-  "Riyadh",
-  "Jeddah",
-  "RUH",
-  "JED",
+  '利雅得',
+  '吉达',
+  'Riyadh',
+  'Jeddah',
+  'RUH',
+  'JED',
   // 卡塔尔
-  "多哈",
-  "Doha",
-  "DOH",
+  '多哈',
+  'Doha',
+  'DOH',
   // 南非
-  "约翰内斯堡",
-  "Johannesburg",
-  "JNB",
+  '约翰内斯堡',
+  'Johannesburg',
+  'JNB',
   // 巴西
-  "圣保罗",
-  "Sao Paulo",
-  "GRU",
+  '圣保罗',
+  'Sao Paulo',
+  'GRU',
   // 墨西哥
-  "墨西哥城",
-  "Mexico City",
-  "MEX",
+  '墨西哥城',
+  'Mexico City',
+  'MEX',
+
+  'via',
+
+  //VPS商/专线常见词
+  'BAGE',
+  'GOMAMI',
+  'AKARI',
+  'DMIT',
+  'NETCUP',
+  'NUBE',
+  'MISAKA',
+  '家宽',
+  '专线',
+  '高级专线',
+  'IEPL',
+  'Edge',
+  'HKT',
+  'HINET',
 ];
 
 /**
@@ -393,41 +402,35 @@ async function operator(proxies, targetPlatform, context) {
     if (!hotArg) return null;
     const codes = String(hotArg)
       .toUpperCase()
-      .split("|")
+      .split('|')
       .map((s) => s.trim())
       .filter(Boolean);
-    const matched = new Set(codes.filter((c) => EN.includes(c) || c === "CN"));
+    const matched = new Set(codes.filter((c) => EN.includes(c) || c === 'CN'));
     return matched.size > 0 ? matched : HOT_REGIONS;
   })();
   const hotOnly = hotRegions !== null;
   const filterWordsRaw = $arguments?.filter;
   const filterRegex = (() => {
     // 传空值：禁用过滤
-    if (filterWordsRaw !== undefined && String(filterWordsRaw).trim() === "")
-      return null;
+    if (filterWordsRaw !== undefined && String(filterWordsRaw).trim() === '') return null;
     const custom = filterWordsRaw
       ? decodeURIComponent(String(filterWordsRaw))
-          .split("|")
+          .split('|')
           .map((s) => s.trim())
           .filter(Boolean)
       : [];
     const words = [...DEFAULT_FILTER_WORDS, ...custom];
-    return new RegExp(
-      words.map((w) => w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|"),
-      "i",
-    );
+    return new RegExp(words.map((w) => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|'), 'i');
   })();
   const blockWordsRaw = $arguments?.block;
-  const blockRegex = blockWordsRaw
-    ? new RegExp(decodeURIComponent(String(blockWordsRaw)), "gi")
-    : null;
-  const API_TOKEN = $arguments?.token || "";
+  const blockRegex = blockWordsRaw ? new RegExp(decodeURIComponent(String(blockWordsRaw)), 'gi') : null;
+  const API_TOKEN = $arguments?.token || '';
   const retainKeysRaw = $arguments?.retain;
   const retainKeys = retainKeysRaw
     ? String(retainKeysRaw)
-        .split("|")
+        .split('|')
         .map((s) => s.trim())
-        .filter((s) => s && s !== "1" && s.toLowerCase() !== "true")
+        .filter((s) => s && s !== '1' && s.toLowerCase() !== 'true')
     : null;
 
   console.log(
@@ -437,9 +440,7 @@ async function operator(proxies, targetPlatform, context) {
   if (filterRegex) {
     const before = proxies.length;
     proxies = proxies.filter((p) => !filterRegex.test(p.name));
-    console.log(
-      `[geo-tag] filter 过滤: ${before - proxies.length} 个节点被丢弃，剩余 ${proxies.length} 个`,
-    );
+    console.log(`[geo-tag] filter 过滤: ${before - proxies.length} 个节点被丢弃，剩余 ${proxies.length} 个`);
   }
 
   let nameHitCount = 0;
@@ -452,14 +453,9 @@ async function operator(proxies, targetPlatform, context) {
 
   for (const proxy of proxies) {
     if (!proxy.server) continue;
-    let cleanName = blockRegex
-      ? proxy.name.replace(blockRegex, "")
-      : proxy.name;
+    let cleanName = blockRegex ? proxy.name.replace(blockRegex, '') : proxy.name;
     // 自动剥离节点名中的域名（含点的多级域名），避免误匹配国家代码
-    cleanName = cleanName.replace(
-      /[a-zA-Z0-9]([a-zA-Z0-9-]*\.)+[a-zA-Z]+/g,
-      "",
-    );
+    cleanName = cleanName.replace(/[a-zA-Z0-9]([a-zA-Z0-9-]*\.)+[a-zA-Z]+/g, '');
     const code = matchNameToCode(cleanName);
     if (code) {
       countryMap.set(serverKey(proxy), code);
@@ -470,9 +466,7 @@ async function operator(proxies, targetPlatform, context) {
   console.log(`[geo-tag] 名称命中 ${nameHitCount}/${proxies.length} 个节点`);
 
   // 未命中的节点，走 DoH → API 流程
-  const apiProxies = proxies.filter(
-    (p) => p.server && !countryMap.has(serverKey(p)),
-  );
+  const apiProxies = proxies.filter((p) => p.server && !countryMap.has(serverKey(p)));
   console.log(`[geo-tag] 需要 API 查询: ${apiProxies.length} 个节点`);
 
   for (let i = 0; i < apiProxies.length; i += CONCURRENCY) {
@@ -490,7 +484,7 @@ async function operator(proxies, targetPlatform, context) {
 
         // 域名先 DoH 解析
         let queryTarget = server;
-        if (!/^[\d.]+$/.test(server) && !server.includes(":")) {
+        if (!/^[\d.]+$/.test(server) && !server.includes(':')) {
           const ip = await resolveHost(server);
           if (ip) {
             console.log(`[geo-tag] 域名解析: ${server} → ${ip}`);
@@ -521,14 +515,12 @@ async function operator(proxies, targetPlatform, context) {
           if (countryCode) {
             countryMap.set(serverKey(proxy), countryCode);
           } else {
-            console.log(
-              `[geo-tag] API 未返回 country_code: ${server}，响应: ${JSON.stringify(data)}`,
-            );
+            console.log(`[geo-tag] API 未返回 country_code: ${server}，响应: ${JSON.stringify(data)}`);
           }
         } catch (e) {
           clearTimeout(timer);
           errorCount++;
-          const reason = e.name === "AbortError" ? "请求超时(3s)" : e.message;
+          const reason = e.name === 'AbortError' ? '请求超时(3s)' : e.message;
           console.log(`[geo-tag] 查询失败: ${server}，原因: ${reason}`);
         }
       }),
@@ -546,21 +538,21 @@ async function operator(proxies, targetPlatform, context) {
       return proxy;
     }
 
-    const subName = proxy._subName || "";
+    const subName = proxy._subName || '';
     const flag = getFlagEmoji(countryCode);
     const zhName = EN_TO_ZH.get(countryCode) || countryCode;
     const key = `${subName}|${countryCode}`;
 
     const count = (counterMap.get(key) || 0) + 1;
     counterMap.set(key, count);
-    const seq = String(count).padStart(2, "0");
+    const seq = String(count).padStart(2, '0');
 
     const newName = removeOriginalName
       ? (() => {
           if (!retainKeys) return `${subName} ${flag} ${zhName} ${seq}`;
           const retained = extractRetainKeywords(proxy.name, retainKeys);
           const base = `${subName} ${flag} ${zhName} ${seq}`;
-          return retained.length > 0 ? `${base} | ${retained.join(" ")}` : base;
+          return retained.length > 0 ? `${base} | ${retained.join(' ')}` : base;
         })()
       : `${subName} ${flag} ${zhName} ${seq} | ${proxy.name}`;
 
@@ -568,9 +560,7 @@ async function operator(proxies, targetPlatform, context) {
     return { ...proxy, name: newName };
   });
 
-  console.log(
-    `[geo-tag] 完成。名称命中: ${nameHitCount}，API 查询: ${missCount}，失败: ${errorCount}`,
-  );
+  console.log(`[geo-tag] 完成。名称命中: ${nameHitCount}，API 查询: ${missCount}，失败: ${errorCount}`);
 
   // hot 参数：只保留热门地区节点
   let result = hotOnly
@@ -602,19 +592,13 @@ async function operator(proxies, targetPlatform, context) {
   if (numone) {
     const nameCount = new Map();
     for (const p of result) {
-      const base = p.name.replace(
-        /\s+\d{2}(\s*\|.*)?$/,
-        (_, suffix) => suffix || "",
-      );
+      const base = p.name.replace(/\s+\d{2}(\s*\|.*)?$/, (_, suffix) => suffix || '');
       nameCount.set(base, (nameCount.get(base) || 0) + 1);
     }
     for (const p of result) {
-      const base = p.name.replace(
-        /\s+\d{2}(\s*\|.*)?$/,
-        (_, suffix) => suffix || "",
-      );
+      const base = p.name.replace(/\s+\d{2}(\s*\|.*)?$/, (_, suffix) => suffix || '');
       if (nameCount.get(base) === 1) {
-        p.name = p.name.replace(/\s+01(\s*\|)/, "$1").replace(/\s+01$/, "");
+        p.name = p.name.replace(/\s+01(\s*\|)/, '$1').replace(/\s+01$/, '');
       }
     }
   }
@@ -626,12 +610,8 @@ async function operator(proxies, targetPlatform, context) {
  * 国家代码转 Emoji 旗帜
  */
 function getFlagEmoji(countryCode) {
-  if (!countryCode) return "🌐";
-  return countryCode
-    .toUpperCase()
-    .replace(/[A-Z]/gu, (char) =>
-      String.fromCodePoint(char.charCodeAt(0) + 127397),
-    );
+  if (!countryCode) return '🌐';
+  return countryCode.toUpperCase().replace(/[A-Z]/gu, (char) => String.fromCodePoint(char.charCodeAt(0) + 127397));
 }
 
 /**
@@ -645,7 +625,7 @@ async function resolveHost(hostname) {
     const timer = setTimeout(() => controller.abort(), 3000);
     const response = await fetch(url, {
       signal: controller.signal,
-      headers: { Accept: "application/dns-json" },
+      headers: { Accept: 'application/dns-json' },
     });
     clearTimeout(timer);
     const data = await response.json();
