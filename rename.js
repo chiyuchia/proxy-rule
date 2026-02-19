@@ -3,7 +3,7 @@
  * 通过节点名匹配或 IP 查询为节点添加地区标签（国旗 + 中文地区名 + 序号）
  *
  * 参数 (通过 $arguments 传入):
- *   remove: boolean              是否删除原节点名，默认 false
+ *   remove: boolean              是否删除原节点名，默认 true
  *   filter: string               过滤词，节点名匹配则直接丢弃，不参与后续处理
  *                                默认应用内置预设（过期|剩余|官网|套餐|重置|到期|Traffic|Expire）
  *                                传空值（filter=）禁用过滤；传词组则追加到内置预设
@@ -15,10 +15,9 @@
  *   hot: boolean|string          只保留热门地区节点，默认不过滤
  *                                传 true/1 使用预设热门地区（HK/TW/CN/JP/SG/US）
  *                                传 "HK|SG|JP" 形式则只保留指定地区
- *   retain: string               remove=true 时从原节点名中提取并保留的关键词，不传则不提取
- *                                内置关键词（东京、悉尼、Los Angeles 等）自动匹配
- *                                可追加自定义关键词，多个用 | 连接，例如: "city|IPLC|专线"
- *                                特殊值 "city" 仅触发城市关键词提取，不追加额外词
+ *   retain: string               remove=true 时从原节点名中提取并保留的关键词，默认启用内置关键词提取
+ *                                传 false/0 禁用；传词组则在内置基础上追加自定义关键词
+ *                                多个用 | 连接，例如: "IPLC|专线"
  *   out: string                  国家标签的组成部分，默认 "FG|EN"
  *                                可选值：FG（旗帜）、ZH（中文名）、EN（英文代码）、QC（英文全称）
  *                                多个用 | 连接，按顺序拼接，例如: "FG|ZH"、"ZH"、"FG|ZH|EN"
@@ -409,7 +408,8 @@ function extractRetainKeywords(name, retainKeys) {
 }
 
 async function operator(proxies, targetPlatform, context) {
-  const removeOriginalName = !!$arguments?.remove;
+  const removeOriginalName =
+    $arguments?.remove === undefined ? true : !!$arguments.remove;
   const numone = !!$arguments?.one;
   const hotArg = $arguments?.hot;
   const hotRegions = (() => {
@@ -446,12 +446,16 @@ async function operator(proxies, targetPlatform, context) {
     : null;
   const API_TOKEN = $arguments?.token || "";
   const retainKeysRaw = $arguments?.retain;
-  const retainKeys = retainKeysRaw
-    ? String(retainKeysRaw)
-        .split("|")
-        .map((s) => s.trim())
-        .filter((s) => s && s !== "1" && s.toLowerCase() !== "true")
-    : null;
+  // 默认启用内置关键词提取（等同于 retain=true）；传 false/0 禁用；传词组则追加自定义词
+  const retainKeys = (() => {
+    if (retainKeysRaw === undefined) return [];
+    const s = String(retainKeysRaw).trim();
+    if (s === "0" || s.toLowerCase() === "false") return null;
+    return s
+      .split("|")
+      .map((s) => s.trim())
+      .filter((s) => s && s !== "1" && s.toLowerCase() !== "true");
+  })();
   const VALID_OUT = new Set(["FG", "ZH", "EN", "QC"]);
   const outParts = ($arguments?.out ? String($arguments.out) : "FG|EN")
     .split("|")
