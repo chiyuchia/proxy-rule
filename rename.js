@@ -162,6 +162,8 @@ const DEFAULT_FILTER_WORDS = [
   "到期",
   "Traffic",
   "Expire",
+  "一元机场",
+  "客户端"
 ];
 const RETAIN_KEYWORDS = [
   // 日本
