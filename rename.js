@@ -19,12 +19,15 @@
  *                                内置关键词（东京、悉尼、Los Angeles 等）自动匹配
  *                                可追加自定义关键词，多个用 | 连接，例如: "city|IPLC|专线"
  *                                特殊值 "city" 仅触发城市关键词提取，不追加额外词
+ *   out: string                  国家标签的组成部分，默认 "FG|EN"
+ *                                可选值：FG（旗帜）、ZH（中文名）、EN（英文代码）、QC（英文全称）
+ *                                多个用 | 连接，按顺序拼接，例如: "FG|ZH"、"ZH"、"FG|ZH|EN"
  *
- * 输出格式:
- *   remove=false: "_subName 🇺🇸 美国 01 | 原节点名"
- *   remove=true 未传 retain:          "_subName 🇺🇸 美国 01"
- *   remove=true 传 retain 有命中:     "_subName 🇺🇸 美国 01 | 东京 IPLC"
- *   remove=true 传 retain 无命中:     "_subName 🇺🇸 美国 01"
+ * 输出格式 (默认 out=FG|EN):
+ *   remove=false: "_subName 🇺🇸 US 01 | 原节点名"
+ *   remove=true 未传 retain:          "_subName 🇺🇸 US 01"
+ *   remove=true 传 retain 有命中:     "_subName 🇺🇸 US 01 | 东京 IPLC"
+ *   remove=true 传 retain 无命中:     "_subName 🇺🇸 US 01"
  */
 
 // prettier-ignore
@@ -449,6 +452,12 @@ async function operator(proxies, targetPlatform, context) {
         .map((s) => s.trim())
         .filter((s) => s && s !== "1" && s.toLowerCase() !== "true")
     : null;
+  const VALID_OUT = new Set(["FG", "ZH", "EN", "QC"]);
+  const outParts = ($arguments?.out ? String($arguments.out) : "FG|EN")
+    .split("|")
+    .map((s) => s.trim().toUpperCase())
+    .filter((s) => VALID_OUT.has(s));
+  const outFields = outParts.length > 0 ? outParts : ["FG", "EN"];
 
   console.log(
     `[geo-tag] 开始处理，共 ${proxies.length} 个节点，removeOriginalName=${removeOriginalName}，hotOnly=${hotOnly}`,
@@ -569,6 +578,18 @@ async function operator(proxies, targetPlatform, context) {
     const subName = proxy._subName || "";
     const flag = getFlagEmoji(countryCode);
     const zhName = EN_TO_ZH.get(countryCode) || countryCode;
+    const qcName = QC[EN.indexOf(countryCode)] || countryCode;
+    const countryLabel = outFields
+      .map((f) =>
+        f === "FG"
+          ? flag
+          : f === "ZH"
+            ? zhName
+            : f === "QC"
+              ? qcName
+              : countryCode,
+      )
+      .join(" ");
     const key = `${subName}|${countryCode}`;
 
     const count = (counterMap.get(key) || 0) + 1;
@@ -577,12 +598,12 @@ async function operator(proxies, targetPlatform, context) {
 
     const newName = removeOriginalName
       ? (() => {
-          if (!retainKeys) return `${subName} ${flag} ${zhName} ${seq}`;
+          if (!retainKeys) return `${subName} ${countryLabel} ${seq}`;
           const retained = extractRetainKeywords(proxy.name, retainKeys);
-          const base = `${subName} ${flag} ${zhName} ${seq}`;
+          const base = `${subName} ${countryLabel} ${seq}`;
           return retained.length > 0 ? `${base} | ${retained.join(" ")}` : base;
         })()
-      : `${subName} ${flag} ${zhName} ${seq} | ${proxy.name}`;
+      : `${subName} ${countryLabel} ${seq} | ${proxy.name}`;
 
     console.log(`[geo-tag] 重命名: ${proxy.name} → ${newName}`);
     return { ...proxy, name: newName };
