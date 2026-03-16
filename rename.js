@@ -389,6 +389,7 @@ const RETAIN_KEYWORDS = [
   "Edge",
   "HKT",
   "HINET",
+  "GIA",
 ];
 
 /**
