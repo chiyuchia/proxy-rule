@@ -71,3 +71,6 @@ sniffer:
         - 443
   skip-domain:                   # 嗅探白名单：排除特定域名的嗅探
     - +.push.apple.com           # 放行苹果推送服务，防止消息通知断连或收不到
+rules:
+  - IP-CIDR,144.34.239.202/32,DIRECT,no-resolve
+  - IP-CIDR,23.94.208.214/32,DIRECT,no-resolve
