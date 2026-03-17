@@ -250,6 +250,7 @@ proxy-groups:
     type: select
     proxies:
       - '🚀 节点选择'
+      - DIRECT
       - '🏠 家宽节点'
       - '🇭🇰 香港节点'
       - '🇺🇲 美国节点'
