@@ -90,6 +90,15 @@ proxy-groups:
 
   - name: '🛡️ 前置节点'
     type: select
+    proxies:
+      - '🚀 节点选择'
+      - '🏠 家宽节点'
+      - '🇭🇰 香港节点'
+      - '🇺🇲 美国节点'
+      - '🇸🇬 狮城节点'
+      - '🇯🇵 日本节点'
+      - '🇼🇸 台湾节点'
+      - '🌍 其他节点'
     include-all: true
     filter: ".*"
 
