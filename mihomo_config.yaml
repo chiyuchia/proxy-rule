@@ -81,6 +81,7 @@ proxy-groups:
     interval: 300
     proxies:
       - '🇭🇰 香港节点'
+      - '🏝️ 落地节点'
       - '🏠 家宽节点'
       - '🇺🇲 美国节点'
       - '🇸🇬 狮城节点'
@@ -106,6 +107,7 @@ proxy-groups:
     url: 'https://www.gstatic.com/generate_204'
     interval: 300
     proxies:
+      - '🏝️ 落地节点'
       - '🏠 家宽节点'
       - '🚀 节点选择'
       - '🇭🇰 香港节点'
@@ -123,6 +125,7 @@ proxy-groups:
     proxies:
       - '🇸🇬 狮城节点'
       - '🚀 节点选择'
+      - '🏝️ 落地节点'
       - '🏠 家宽节点'
       - '🇭🇰 香港节点'
       - '🇺🇲 美国节点'
@@ -138,6 +141,7 @@ proxy-groups:
     proxies:
       - '🇺🇲 美国节点'
       - '🚀 节点选择'
+      - '🏝️ 落地节点'
       - '🏠 家宽节点'
       - '🇭🇰 香港节点'
       - '🇸🇬 狮城节点'
@@ -152,6 +156,7 @@ proxy-groups:
     proxies:
       - '🇸🇬 狮城节点'
       - '🚀 节点选择'
+      - '🏝️ 落地节点'
       - '🏠 家宽节点'
       - '🇭🇰 香港节点'
       - '🇺🇲 美国节点'
@@ -165,6 +170,7 @@ proxy-groups:
     interval: 300
     proxies:
       - '🚀 节点选择'
+      - '🏝️ 落地节点'
       - '🏠 家宽节点'
       - '🇭🇰 香港节点'
       - '🇺🇲 美国节点'
@@ -180,6 +186,7 @@ proxy-groups:
     proxies:
       - DIRECT
       - '🚀 节点选择'
+      - '🏝️ 落地节点'
       - '🏠 家宽节点'
       - '🇭🇰 香港节点'
       - '🇺🇲 美国节点'
@@ -194,6 +201,7 @@ proxy-groups:
     interval: 300
     proxies:
       - '🚀 节点选择'
+      - '🏝️ 落地节点'
       - '🏠 家宽节点'
       - '🇭🇰 香港节点'
       - '🇺🇲 美国节点'
@@ -207,6 +215,7 @@ proxy-groups:
     url: 'https://www.gstatic.com/generate_204'
     interval: 300
     proxies:
+      - '🏝️ 落地节点'
       - '🏠 家宽节点'
       - '🚀 节点选择'
       - '🇭🇰 香港节点'
@@ -223,6 +232,7 @@ proxy-groups:
     proxies:
       - DIRECT
       - '🚀 节点选择'
+      - '🏝️ 落地节点'
       - '🏠 家宽节点'
       - '🇭🇰 香港节点'
       - '🇺🇲 美国节点'
@@ -237,6 +247,7 @@ proxy-groups:
     interval: 300
     proxies:
       - '🚀 节点选择'
+      - '🏝️ 落地节点'
       - '🏠 家宽节点'
       - '🇭🇰 香港节点'
       - '🇺🇲 美国节点'
@@ -267,6 +278,7 @@ proxy-groups:
     proxies:
       - '🇸🇬 狮城节点'
       - '🚀 节点选择'
+      - '🏝️ 落地节点'
       - '🏠 家宽节点'
       - '🇭🇰 香港节点'
       - '🇺🇲 美国节点'
@@ -281,6 +293,7 @@ proxy-groups:
     proxies:
       - '🚀 节点选择'
       - DIRECT
+      - '🏝️ 落地节点'
       - '🏠 家宽节点'
       - '🇭🇰 香港节点'
       - '🇺🇲 美国节点'
@@ -293,7 +306,16 @@ proxy-groups:
     type: select
     url: 'https://www.gstatic.com/generate_204'
     interval: 300
-    filter: "(家宽)"
+    filter: "(家宽|落地)"
+    include-all: true
+
+  - name: '🏝️ 落地节点'
+    type: select
+    url: 'https://www.gstatic.com/generate_204'
+    interval: 300
+    proxies:
+      - '🏠 家宽节点'
+    filter: "(家宽|落地)"
     include-all: true
 
   - name: '🇭🇰 香港节点'
