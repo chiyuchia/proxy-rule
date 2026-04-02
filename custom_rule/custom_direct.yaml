@@ -9,6 +9,7 @@ payload:
   # 运行时实际出现，且当前通过“前置节点”接入；是否保留直连取决于你的链路设计
   - "DOMAIN,us-nj.122870.xyz"
   # 运行时配置中实际作为 server 出现的其他节点域名
+  - "DOMAIN-SUFFIX,sys.wpssx.com" # 合租线路 🇲🇾 MY | Evoxt KUL
   - "DOMAIN-SUFFIX,nodesyo.org"
   - "DOMAIN-SUFFIX,link-t7.com"
   - "DOMAIN-SUFFIX,dexlos.com"
