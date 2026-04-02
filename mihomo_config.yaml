@@ -47,7 +47,7 @@ dns:
     - "https://doh.pub/dns-query"
     - "https://dns.alidns.com/dns-query"
   proxy-server-nameserver-policy:
-    "*.oix_nodes.com": 106.53.6.121
+    "+.oix_nodes.com": 106.53.6.121
 
 # ==========================================
 # 域名嗅探 (Sniffer)
