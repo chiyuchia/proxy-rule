@@ -369,6 +369,13 @@ proxy-groups:
       - "🚀 节点选择"
 
 rule-providers:
+  custom_direct:
+    type: http
+    behavior: classical
+    url: "https://raw.githubusercontent.com/chiyuchia/proxy-rule/master/custom_rule/custom_direct.yaml"
+    path: ./ruleset/custom_direct.yaml
+    interval: 86400
+
   local-area-network: &classical_text_provider
     type: http
     behavior: classical
@@ -514,10 +521,7 @@ rule-providers:
     url: "https://cdn.jsdmirror.com/gh/ACL4SSR/ACL4SSR@master/Clash/ProxyGFWlist.list"
 
 rules:
-  - "PROCESS-NAME,qbittorrent-nox,🎯 全球直连"
-  - "DOMAIN-SUFFIX,334837632.xyz,🎯 全球直连"
-  - "DOMAIN-SUFFIX,07c06051-81fd-4aa4-a94e-a0860315df8f.org,🎯 全球直连"
-  - "DOMAIN-SUFFIX,22b74943-12ad-47f4-b705-f2defb6ffea0.org,🎯 全球直连"
+  - "RULE-SET,custom_direct,🎯 全球直连"
   - "RULE-SET,local-area-network,🎯 全球直连"
   - "RULE-SET,unban,🎯 全球直连"
   - "RULE-SET,china-domain,🎯 全球直连"
