@@ -383,6 +383,7 @@ const RETAIN_KEYWORDS = [
   "NETCUP",
   "NUBE",
   "MISAKA",
+  "Sakura",
   "家宽",
   "专线",
   "高级专线",
