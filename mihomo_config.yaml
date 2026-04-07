@@ -98,20 +98,6 @@ proxy-groups:
       - "🇼🇸 台湾节点"
       - "🌍 其他节点"
 
-  - name: "🛡️ 前置节点"
-    type: select
-    url: "https://www.gstatic.com/generate_204"
-    interval: 300
-    proxies:
-      - "🚀 节点选择"
-      - "🇭🇰 香港节点"
-      - "🇺🇲 美国节点"
-      - "🇸🇬 狮城节点"
-      - "🇲🇾 大马节点"
-      - "🇯🇵 日本节点"
-      - "🇼🇸 台湾节点"
-      - "🌍 其他节点"
-
   - name: "🛡️ 亚太中转"
     type: select
     url: "https://www.gstatic.com/generate_204"
