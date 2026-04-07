@@ -26,10 +26,10 @@ dns:
     - "ntp.*.com" # 网络时间协议服务器
     - "+.market.xiaomi.com" # 小米应用商店(特定网络需求)
     - "localhost.ptlogin2.qq.com" # 腾讯系软件快捷登录必备回环域名
-    # 当前维护中的节点域名；旧 IEPL 域已迁移到 oix_nodes.com
+    # 当前维护中的节点域名；旧 IEPL 域已迁移到 cloud-nodes.com
     - "+.334837632.xyz" # V2Tun 节点域名
     - "+.07c06051-81fd-4aa4-a94e-a0860315df8f.org" # oixCloud Edge/落地域名
-    - "+.oix_nodes.com" # oixNodes IEPL 节点域名
+    - "+.cloud-nodes.com" # oixNodes IEPL 节点域名
     - "+.nodesyo.org" # Nodesyo 节点域名
     - "+.link-t7.com" # Link T7 节点域名
     - "+.dexlos.com" # Dexlos 节点域名
@@ -52,7 +52,7 @@ dns:
     - "https://doh.pub/dns-query"
     - "https://dns.alidns.com/dns-query"
   proxy-server-nameserver-policy:
-    "+.oix_nodes.com": 124.221.68.73:1053
+    "+.cloud-nodes.com": 140.205.1.13
 
 # ==========================================
 # 域名嗅探 (Sniffer)
