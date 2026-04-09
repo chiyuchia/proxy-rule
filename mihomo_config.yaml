@@ -88,15 +88,23 @@ proxy-groups:
     url: "https://www.gstatic.com/generate_204"
     interval: 300
     proxies:
-      - "🇭🇰 香港节点"
-      - "🏝️ 落地节点"
+      - "🏝️ 精品节点"
       - "🏠 家宽节点"
+      - "💻 自建节点"
+      - "🖥️ 合租节点"
+      - "🇭🇰 香港节点"
       - "🇺🇲 美国节点"
       - "🇸🇬 狮城节点"
       - "🇲🇾 大马节点"
       - "🇯🇵 日本节点"
       - "🇼🇸 台湾节点"
       - "🌍 其他节点"
+      - "✈️ V2Tun"
+      - "✈️ oixCloud"
+      - "✈️ Nachoneko"
+      - "✈️ Netsyo"
+      - "✈️ 良心云"
+      - "✈️ 一元机场"
 
   - name: "🛡️ 亚太中转"
     type: select
@@ -105,12 +113,21 @@ proxy-groups:
     proxies:
       - "🇲🇾 大马节点"
       - "🚀 节点选择"
+      - "🏝️ 精品节点"
+      - "💻 自建节点"
+      - "🖥️ 合租节点"
       - "🇭🇰 香港节点"
       - "🇺🇲 美国节点"
       - "🇸🇬 狮城节点"
       - "🇯🇵 日本节点"
       - "🇼🇸 台湾节点"
       - "🌍 其他节点"
+      - "✈️ V2Tun"
+      - "✈️ oixCloud"
+      - "✈️ Nachoneko"
+      - "✈️ Netsyo"
+      - "✈️ 良心云"
+      - "✈️ 一元机场"
 
   - name: "🛡️ 美西中转"
     type: select
@@ -119,12 +136,21 @@ proxy-groups:
     proxies:
       - "🇺🇲 美国节点"
       - "🚀 节点选择"
+      - "🏝️ 精品节点"
+      - "💻 自建节点"
+      - "🖥️ 合租节点"
       - "🇭🇰 香港节点"
       - "🇸🇬 狮城节点"
       - "🇲🇾 大马节点"
       - "🇯🇵 日本节点"
       - "🇼🇸 台湾节点"
       - "🌍 其他节点"
+      - "✈️ V2Tun"
+      - "✈️ oixCloud"
+      - "✈️ Nachoneko"
+      - "✈️ Netsyo"
+      - "✈️ 良心云"
+      - "✈️ 一元机场"
 
   - name: "🛡️ 日本中转"
     type: select
@@ -133,20 +159,61 @@ proxy-groups:
     proxies:
       - "🇯🇵 日本节点"
       - "🚀 节点选择"
+      - "🏝️ 精品节点"
+      - "💻 自建节点"
+      - "🖥️ 合租节点"
       - "🇭🇰 香港节点"
       - "🇺🇲 美国节点"
       - "🇸🇬 狮城节点"
       - "🇲🇾 大马节点"
       - "🇼🇸 台湾节点"
       - "🌍 其他节点"
+      - "✈️ V2Tun"
+      - "✈️ oixCloud"
+      - "✈️ Nachoneko"
+      - "✈️ Netsyo"
+      - "✈️ 良心云"
+      - "✈️ 一元机场"
+
+  - name: "🏠 家宽节点"
+    type: select
+    url: "https://www.gstatic.com/generate_204"
+    interval: 300
+    filter: "(家宽|落地)"
+    include-all: true
+
+  - name: "🏝️ 精品节点"
+    type: select
+    url: "https://www.gstatic.com/generate_204"
+    interval: 300
+    proxies:
+      - "🏠 家宽节点"
+    filter: "(自建|合租|家宽|落地|线路)"
+    include-all: true
+
+  - name: "💻 自建节点"
+    type: select
+    url: "https://www.gstatic.com/generate_204"
+    interval: 300
+    filter: "(自建)"
+    include-all: true
+
+  - name: "🖥️ 合租节点"
+    type: select
+    url: "https://www.gstatic.com/generate_204"
+    interval: 300
+    filter: "(合租)"
+    include-all: true
 
   - name: "♊ Gemini"
     type: select
     url: "https://www.gstatic.com/generate_204"
     interval: 300
     proxies:
-      - "🏝️ 落地节点"
       - "🏠 家宽节点"
+      - "🏝️ 精品节点"
+      - "💻 自建节点"
+      - "🖥️ 合租节点"
       - "🚀 节点选择"
       - "🇭🇰 香港节点"
       - "🇺🇲 美国节点"
@@ -155,14 +222,22 @@ proxy-groups:
       - "🇯🇵 日本节点"
       - "🇼🇸 台湾节点"
       - "🌍 其他节点"
+      - "✈️ V2Tun"
+      - "✈️ oixCloud"
+      - "✈️ Nachoneko"
+      - "✈️ Netsyo"
+      - "✈️ 良心云"
+      - "✈️ 一元机场"
 
   - name: "💬 Ai平台"
     type: select
     url: "https://www.gstatic.com/generate_204"
     interval: 300
     proxies:
-      - "🏝️ 落地节点"
       - "🏠 家宽节点"
+      - "🏝️ 精品节点"
+      - "💻 自建节点"
+      - "🖥️ 合租节点"
       - "🚀 节点选择"
       - "🇭🇰 香港节点"
       - "🇺🇲 美国节点"
@@ -171,6 +246,12 @@ proxy-groups:
       - "🇯🇵 日本节点"
       - "🇼🇸 台湾节点"
       - "🌍 其他节点"
+      - "✈️ V2Tun"
+      - "✈️ oixCloud"
+      - "✈️ Nachoneko"
+      - "✈️ Netsyo"
+      - "✈️ 良心云"
+      - "✈️ 一元机场"
 
   - name: "🎥 奈飞视频"
     type: select
@@ -179,14 +260,22 @@ proxy-groups:
     proxies:
       - "🇸🇬 狮城节点"
       - "🚀 节点选择"
-      - "🏝️ 落地节点"
       - "🏠 家宽节点"
+      - "🏝️ 精品节点"
+      - "💻 自建节点"
+      - "🖥️ 合租节点"
       - "🇭🇰 香港节点"
       - "🇺🇲 美国节点"
       - "🇲🇾 大马节点"
       - "🇯🇵 日本节点"
       - "🇼🇸 台湾节点"
       - "🌍 其他节点"
+      - "✈️ V2Tun"
+      - "✈️ oixCloud"
+      - "✈️ Nachoneko"
+      - "✈️ Netsyo"
+      - "✈️ 良心云"
+      - "✈️ 一元机场"
 
   - name: "📹 油管视频"
     type: select
@@ -195,14 +284,22 @@ proxy-groups:
     proxies:
       - "🇺🇲 美国节点"
       - "🚀 节点选择"
-      - "🏝️ 落地节点"
       - "🏠 家宽节点"
+      - "🏝️ 精品节点"
+      - "💻 自建节点"
+      - "🖥️ 合租节点"
       - "🇭🇰 香港节点"
       - "🇸🇬 狮城节点"
       - "🇲🇾 大马节点"
       - "🇯🇵 日本节点"
       - "🇼🇸 台湾节点"
       - "🌍 其他节点"
+      - "✈️ V2Tun"
+      - "✈️ oixCloud"
+      - "✈️ Nachoneko"
+      - "✈️ Netsyo"
+      - "✈️ 良心云"
+      - "✈️ 一元机场"
 
   - name: "📼 EMBY"
     type: select
@@ -211,30 +308,46 @@ proxy-groups:
     proxies:
       - "🇺🇲 美国节点"
       - "🚀 节点选择"
-      - "🏝️ 落地节点"
       - "🏠 家宽节点"
+      - "🏝️ 精品节点"
+      - "💻 自建节点"
+      - "🖥️ 合租节点"
       - "🇭🇰 香港节点"
       - "🇸🇬 狮城节点"
       - "🇲🇾 大马节点"
       - "🇯🇵 日本节点"
       - "🇼🇸 台湾节点"
       - "🌍 其他节点"
+      - "✈️ V2Tun"
+      - "✈️ oixCloud"
+      - "✈️ Nachoneko"
+      - "✈️ Netsyo"
+      - "✈️ 良心云"
+      - "✈️ 一元机场"
 
   - name: "📲 电报消息"
     type: select
     url: "https://www.gstatic.com/generate_204"
     interval: 300
     proxies:
-      - "🇲🇾 大马节点"
+      - "🇸🇬 狮城节点"
       - "🚀 节点选择"
-      - "🏝️ 落地节点"
       - "🏠 家宽节点"
+      - "🏝️ 精品节点"
+      - "💻 自建节点"
+      - "🖥️ 合租节点"
       - "🇭🇰 香港节点"
       - "🇺🇲 美国节点"
-      - "🇸🇬 狮城节点"
+      - "🇲🇾 大马节点"
       - "🇯🇵 日本节点"
       - "🇼🇸 台湾节点"
       - "🌍 其他节点"
+      - "✈️ V2Tun"
+      - "✈️ oixCloud"
+      - "✈️ Nachoneko"
+      - "✈️ Netsyo"
+      - "✈️ 良心云"
+      - "✈️ 一元机场"
 
   - name: "🐙 Github"
     type: select
@@ -242,8 +355,10 @@ proxy-groups:
     interval: 300
     proxies:
       - "🚀 节点选择"
-      - "🏝️ 落地节点"
       - "🏠 家宽节点"
+      - "🏝️ 精品节点"
+      - "💻 自建节点"
+      - "🖥️ 合租节点"
       - "🇭🇰 香港节点"
       - "🇺🇲 美国节点"
       - "🇸🇬 狮城节点"
@@ -251,6 +366,12 @@ proxy-groups:
       - "🇯🇵 日本节点"
       - "🇼🇸 台湾节点"
       - "🌍 其他节点"
+      - "✈️ V2Tun"
+      - "✈️ oixCloud"
+      - "✈️ Nachoneko"
+      - "✈️ Netsyo"
+      - "✈️ 良心云"
+      - "✈️ 一元机场"
 
   - name: "🍎 Apple"
     type: select
@@ -259,8 +380,10 @@ proxy-groups:
     proxies:
       - DIRECT
       - "🚀 节点选择"
-      - "🏝️ 落地节点"
       - "🏠 家宽节点"
+      - "🏝️ 精品节点"
+      - "💻 自建节点"
+      - "🖥️ 合租节点"
       - "🇭🇰 香港节点"
       - "🇺🇲 美国节点"
       - "🇸🇬 狮城节点"
@@ -268,6 +391,12 @@ proxy-groups:
       - "🇯🇵 日本节点"
       - "🇼🇸 台湾节点"
       - "🌍 其他节点"
+      - "✈️ V2Tun"
+      - "✈️ oixCloud"
+      - "✈️ Nachoneko"
+      - "✈️ Netsyo"
+      - "✈️ 良心云"
+      - "✈️ 一元机场"
 
   - name: "Ⓜ️ Microsoft"
     type: select
@@ -275,8 +404,10 @@ proxy-groups:
     interval: 300
     proxies:
       - "🚀 节点选择"
-      - "🏝️ 落地节点"
       - "🏠 家宽节点"
+      - "🏝️ 精品节点"
+      - "💻 自建节点"
+      - "🖥️ 合租节点"
       - "🇭🇰 香港节点"
       - "🇺🇲 美国节点"
       - "🇸🇬 狮城节点"
@@ -284,14 +415,22 @@ proxy-groups:
       - "🇯🇵 日本节点"
       - "🇼🇸 台湾节点"
       - "🌍 其他节点"
+      - "✈️ V2Tun"
+      - "✈️ oixCloud"
+      - "✈️ Nachoneko"
+      - "✈️ Netsyo"
+      - "✈️ 良心云"
+      - "✈️ 一元机场"
 
   - name: "📢 Google"
     type: select
     url: "https://www.gstatic.com/generate_204"
     interval: 300
     proxies:
-      - "🏝️ 落地节点"
       - "🏠 家宽节点"
+      - "🏝️ 精品节点"
+      - "💻 自建节点"
+      - "🖥️ 合租节点"
       - "🚀 节点选择"
       - "🇭🇰 香港节点"
       - "🇺🇲 美国节点"
@@ -300,6 +439,12 @@ proxy-groups:
       - "🇯🇵 日本节点"
       - "🇼🇸 台湾节点"
       - "🌍 其他节点"
+      - "✈️ V2Tun"
+      - "✈️ oixCloud"
+      - "✈️ Nachoneko"
+      - "✈️ Netsyo"
+      - "✈️ 良心云"
+      - "✈️ 一元机场"
 
   - name: "📺 国内媒体"
     type: select
@@ -308,8 +453,10 @@ proxy-groups:
     proxies:
       - DIRECT
       - "🚀 节点选择"
-      - "🏝️ 落地节点"
       - "🏠 家宽节点"
+      - "🏝️ 精品节点"
+      - "💻 自建节点"
+      - "🖥️ 合租节点"
       - "🇭🇰 香港节点"
       - "🇺🇲 美国节点"
       - "🇸🇬 狮城节点"
@@ -317,6 +464,12 @@ proxy-groups:
       - "🇯🇵 日本节点"
       - "🇼🇸 台湾节点"
       - "🌍 其他节点"
+      - "✈️ V2Tun"
+      - "✈️ oixCloud"
+      - "✈️ Nachoneko"
+      - "✈️ Netsyo"
+      - "✈️ 良心云"
+      - "✈️ 一元机场"
 
   - name: "🌍 国外媒体"
     type: select
@@ -324,14 +477,22 @@ proxy-groups:
     interval: 300
     proxies:
       - "🚀 节点选择"
-      - "🏝️ 落地节点"
       - "🏠 家宽节点"
+      - "🏝️ 精品节点"
+      - "💻 自建节点"
+      - "🖥️ 合租节点"
       - "🇭🇰 香港节点"
       - "🇺🇲 美国节点"
       - "🇸🇬 狮城节点"
       - "🇯🇵 日本节点"
       - "🇼🇸 台湾节点"
       - "🌍 其他节点"
+      - "✈️ V2Tun"
+      - "✈️ oixCloud"
+      - "✈️ Nachoneko"
+      - "✈️ Netsyo"
+      - "✈️ 良心云"
+      - "✈️ 一元机场"
       - DIRECT
 
   - name: "🎮 游戏平台"
@@ -341,8 +502,10 @@ proxy-groups:
     proxies:
       - "🚀 节点选择"
       - DIRECT
-      - "🏝️ 落地节点"
       - "🏠 家宽节点"
+      - "🏝️ 精品节点"
+      - "💻 自建节点"
+      - "🖥️ 合租节点"
       - "🇭🇰 香港节点"
       - "🇺🇲 美国节点"
       - "🇸🇬 狮城节点"
@@ -350,6 +513,12 @@ proxy-groups:
       - "🇯🇵 日本节点"
       - "🇼🇸 台湾节点"
       - "🌍 其他节点"
+      - "✈️ V2Tun"
+      - "✈️ oixCloud"
+      - "✈️ Nachoneko"
+      - "✈️ Netsyo"
+      - "✈️ 良心云"
+      - "✈️ 一元机场"
 
   - name: "💰 加密货币"
     type: select
@@ -358,14 +527,22 @@ proxy-groups:
     proxies:
       - "🇸🇬 狮城节点"
       - "🚀 节点选择"
-      - "🏝️ 落地节点"
       - "🏠 家宽节点"
+      - "🏝️ 精品节点"
+      - "💻 自建节点"
+      - "🖥️ 合租节点"
       - "🇭🇰 香港节点"
       - "🇺🇲 美国节点"
       - "🇲🇾 大马节点"
       - "🇯🇵 日本节点"
       - "🇼🇸 台湾节点"
       - "🌍 其他节点"
+      - "✈️ V2Tun"
+      - "✈️ oixCloud"
+      - "✈️ Nachoneko"
+      - "✈️ Netsyo"
+      - "✈️ 良心云"
+      - "✈️ 一元机场"
 
   - name: "🐟 漏网之鱼"
     type: select
@@ -374,8 +551,10 @@ proxy-groups:
     proxies:
       - "🚀 节点选择"
       - DIRECT
-      - "🏝️ 落地节点"
       - "🏠 家宽节点"
+      - "🏝️ 精品节点"
+      - "💻 自建节点"
+      - "🖥️ 合租节点"
       - "🇭🇰 香港节点"
       - "🇺🇲 美国节点"
       - "🇸🇬 狮城节点"
@@ -383,22 +562,12 @@ proxy-groups:
       - "🇯🇵 日本节点"
       - "🇼🇸 台湾节点"
       - "🌍 其他节点"
-
-  - name: "🏠 家宽节点"
-    type: select
-    url: "https://www.gstatic.com/generate_204"
-    interval: 300
-    filter: "(家宽|落地)"
-    include-all: true
-
-  - name: "🏝️ 落地节点"
-    type: select
-    url: "https://www.gstatic.com/generate_204"
-    interval: 300
-    proxies:
-      - "🏠 家宽节点"
-    filter: "(自建|家宽|落地|线路)"
-    include-all: true
+      - "✈️ V2Tun"
+      - "✈️ oixCloud"
+      - "✈️ Nachoneko"
+      - "✈️ Netsyo"
+      - "✈️ 良心云"
+      - "✈️ 一元机场"
 
   - name: "🇭🇰 香港节点"
     type: select
@@ -447,6 +616,48 @@ proxy-groups:
     url: "https://www.gstatic.com/generate_204"
     interval: 300
     filter: "^(?!.*(港|HK|hk|Hong Kong|HongKong|hongkong|美|波特兰|达拉斯|俄勒冈|凤凰城|费利蒙|硅谷|拉斯维加斯|洛杉矶|圣何塞|圣克拉拉|西雅图|芝加哥|US|United States|UnitedStates|🇺🇲|新加坡|坡|狮城|SG|Singapore|MY|马来西亚|马来|🇲🇾|日本|川日|东京|大阪|泉日|埼玉|沪日|深日|JP|Japan|台|新北|彰化|TW|Taiwan)).*"
+    include-all: true
+
+  - name: "✈️ V2Tun"
+    type: select
+    url: "https://www.gstatic.com/generate_204"
+    interval: 300
+    filter: "(V2Tun)"
+    include-all: true
+
+  - name: "✈️ oixCloud"
+    type: select
+    url: "https://www.gstatic.com/generate_204"
+    interval: 300
+    filter: "(oixCloud)"
+    include-all: true
+
+  - name: "✈️ Nachoneko"
+    type: select
+    url: "https://www.gstatic.com/generate_204"
+    interval: 300
+    filter: "(Nachoneko)"
+    include-all: true
+
+  - name: "✈️ Netsyo"
+    type: select
+    url: "https://www.gstatic.com/generate_204"
+    interval: 300
+    filter: "(Netsyo)"
+    include-all: true
+
+  - name: "✈️ 良心云"
+    type: select
+    url: "https://www.gstatic.com/generate_204"
+    interval: 300
+    filter: "(良心云)"
+    include-all: true
+
+  - name: "✈️ 一元机场"
+    type: select
+    url: "https://www.gstatic.com/generate_204"
+    interval: 300
+    filter: "(一元机场)"
     include-all: true
 
   - name: "🎯 全球直连"
