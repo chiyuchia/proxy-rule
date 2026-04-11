@@ -41,7 +41,6 @@ dns:
     - '+.nodesyo.org'            # Nodesyo 节点域名
     - '+.link-t7.com'            # Link T7 节点域名
     - '+.dexlos.com'             # Dexlos 节点域名
-    - 'nat.qq.pw'                # 自建节点域名
     - 'us-nj.122870.xyz'         # 家宽节点域名
   use-hosts: true                # 尊重操作系统的 /etc/hosts 记录
   default-nameserver:            # 启动 DNS：仅用于解析下方 DoH 链接本身的真实 IP
