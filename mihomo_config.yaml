@@ -36,7 +36,6 @@ dns:
     - "+.us-nj.122870.xyz" # 家宽节点域名
     - "+.sys.wpssx.com" # 合租线路 🇲🇾 MY | Evoxt KUL
     # 当前 runtime 未出现，但保留为历史/备用节点域
-    - "+.nat.qq.pw" # 自建节点域名
   use-hosts: true # 尊重操作系统的 /etc/hosts 记录
   default-nameserver: # 启动 DNS：仅用于解析下方 DoH 链接本身的真实 IP
     - 119.29.29.29
